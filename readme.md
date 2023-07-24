@@ -75,7 +75,7 @@ Upon completion, run the following commands:
 ```bash
 $ git add .
 $ git commit -m "Solved lab"
-$ git push origin master
+$ git push origin main
 ```
 
 Create Pull Request so your TAs can check up your work.
