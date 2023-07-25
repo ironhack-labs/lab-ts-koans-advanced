@@ -20,15 +20,15 @@ describe('TypeScript Koans - Test Suite 1', () => {
     const person: ImmutablePerson = createImmutablePerson('Alice', 28, 'alice@example.com');
 
     // Failing Test 1: Uncomment the expect statements below and provide the expected values
-    // expect(person.name).toEqual();
-    // expect(person.age).toEqual();
-    // expect(person.email).toEqual();
+    expect(person.name).toEqual('Alice');
+    expect(person.age).toEqual(28);
+    expect(person.email).toEqual('alice@example.com');
 
     // Koan 2: Attempting to modify properties of an immutable person
     // person.name = 'Bob'; // Uncomment this line and observe the error
 
     // Failing Test 2: Uncomment the expect statement below and provide the expected value
-    // expect(person.name).toEqual();
+    expect(person.name).toEqual('Alice');
 
     // Koan 3: Creating an array of immutable persons
     const immutablePeople: ImmutablePerson[] = [
@@ -37,15 +37,15 @@ describe('TypeScript Koans - Test Suite 1', () => {
     ];
 
     // Failing Test 3: Uncomment the expect statements below and provide the expected values
-    // expect(immutablePeople.length).toEqual();
-    // expect(immutablePeople[0].name).toEqual();
-    // expect(immutablePeople[1].age).toEqual();
+    expect(immutablePeople.length).toEqual(2);
+    expect(immutablePeople[0].name).toEqual('John');
+    expect(immutablePeople[1].age).toEqual(25);
 
     // Koan 4: Attempting to modify properties of an immutable person in the array
     // immutablePeople[0].name = 'Michael'; // Uncomment this line and observe the error
 
     // Failing Test 4: Uncomment the expect statement below and provide the expected value
-    // expect(immutablePeople[0].name).toEqual();
+    expect(immutablePeople[0].name).toEqual('John');
   });
 });
 
@@ -76,9 +76,9 @@ describe('TypeScript Koans - Test Suite 2', () => {
     }
 
     // Failing Test 1: Uncomment the expect statements below and provide the expected values
-    // expect(userData).toEqual();
+    expect(userData).toEqual('John Doe');
     // expect(userData).toEqual('John Doe');
-    // expect(userData).toEqual('Alice Smith');
+    expect(userData).not.toEqual('Alice Smith');
 
     // Koan 2: Using Promise.all to fetch multiple data asynchronously
     const userIds = [1, 2];
@@ -86,8 +86,8 @@ describe('TypeScript Koans - Test Suite 2', () => {
     const usersData = await Promise.all(fetchPromises);
 
     // Failing Test 2: Uncomment the expect statements below and provide the expected values
-    // expect(usersData.length).toEqual();
-    // expect(usersData).toEqual();
+    expect(usersData.length).toEqual(2);
+    expect(usersData).toEqual(['John Doe', 'Alice Smith']);
     // expect(usersData).toEqual(['John Doe', 'Alice Smith']);
 
     // Koan 3: Using Promise.race to fetch data from the fastest resolved promise
@@ -98,13 +98,13 @@ describe('TypeScript Koans - Test Suite 2', () => {
     const winner = await Promise.race(racePromises);
 
     // Failing Test 3: Uncomment the expect statements below and provide the expected values
-    // expect(winner).toEqual();
-    // expect(winner).toEqual('John Doe');
+    expect(winner).toEqual('Winner');
+    expect(winner).not.toEqual('John Doe');
     // expect(winner).toEqual('Winner');
   });
 });
 
-import axios, { AxiosResponse } from 'axios';
+import axios, { AxiosError, AxiosResponse } from 'axios';
 
 // Define a TypeScript interface for the Post object
 interface Post {
@@ -137,17 +137,19 @@ describe('TypeScript Koans - Test Suite 3', () => {
     }
 
     // Failing Test 1: Uncomment the expect statements below and provide the expected values
-    // expect(posts.length).toEqual();
-    // expect(posts[0].title).toEqual();
-    // expect(posts[1].body).toEqual();
-    // expect(posts[2].id).toEqual();
+    expect(posts.length).toEqual(100);
+    expect(posts[0].title).toEqual('sunt aut facere repellat provident occaecati excepturi optio reprehenderit');
+    expect(posts[1].body).toEqual('est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla');
+    expect(posts[2].id).toEqual(3);
 
     // Koan 2: Fetching non-existent data from the mock API (simulating an error)
     try {
       await axios.get('/nonexistent-route'); // Uncomment this line to observe the error
     } catch (error) {
-      // Failing Test 2: Uncomment the expect statement below and provide the expected value
-      // expect(error.message).toContain();
+      if(error instanceof AxiosError) {
+        // Failing Test 2: Uncomment the expect statement below and provide the expected value
+        expect(error.message).toContain('ECONNREFUSED');
+      }
     }
   });
 });
@@ -208,7 +210,7 @@ describe('TypeScript Koans - Test Suite 4', () => {
         return String(input);
       }
       // Failing Test 3: Uncomment the expect statement below and provide the expected value
-      // expect(stringifyIfObject(42)).toEqual();
+      // expect(stringifyIfObject(42)).toEqual('42');
     }
   });
 });
@@ -238,7 +240,7 @@ describe('TypeScript Koans - Test Suite 5', () => {
     }
 
     // Failing Test 1: Uncomment the expect statement below and provide the expected value
-    // expect(addToStringOrNumber(3, 5)).toEqual();
+    expect(addToStringOrNumber(3, 5)).toEqual(8);
 
     // Koan 2: Using intersection types
     function mergePersonAndEmployee(person: Person, employee: Employee): Person & Employee {
@@ -246,7 +248,7 @@ describe('TypeScript Koans - Test Suite 5', () => {
     }
 
     // Failing Test 2: Uncomment the expect statement below and provide the expected value
-    // expect(mergePersonAndEmployee({ name: 'John', age: 30 }, { company: 'ABC', position: 'Developer' })).toEqual();
+    expect(mergePersonAndEmployee({ name: 'John', age: 30 }, { company: 'ABC', position: 'Developer' })).toEqual({name: 'John', age: 30, company: 'ABC', position: 'Developer'});
 
     // Koan 3: Using type guards with union types
     function printStringOrNumber(input: StringOrNumber): string {
@@ -258,7 +260,7 @@ describe('TypeScript Koans - Test Suite 5', () => {
     }
 
     // Failing Test 3: Uncomment the expect statement below and provide the expected value
-    // expect(printStringOrNumber('Hello')).toEqual();
+    expect(printStringOrNumber('Hello')).toEqual('The input is a string: Hello');
 
     // Koan 4: Using type guards with intersection types
     function isPersonAndEmployee(input: any): input is Person & Employee {
@@ -274,6 +276,6 @@ describe('TypeScript Koans - Test Suite 5', () => {
     }
 
     // Failing Test 4: Uncomment the expect statement below and provide the expected value
-    // expect(printPersonAndEmployee({ name: 'Alice', age: 28, company: 'XYZ', position: 'Manager' })).toEqual();
+    expect(printPersonAndEmployee({ name: 'Alice', age: 28, company: 'XYZ', position: 'Manager' })).toEqual('Name: Alice, Age: 28, Company: XYZ, Position: Manager');
   });
 });
