@@ -20,15 +20,17 @@ describe('TypeScript Koans - Test Suite 1', () => {
     const person: ImmutablePerson = createImmutablePerson('Alice', 28, 'alice@example.com');
 
     // Failing Test 1: Uncomment the expect statements below and provide the expected values
-    // expect(person.name).toEqual();
-    // expect(person.age).toEqual();
-    // expect(person.email).toEqual();
+    expect(person.name).toEqual('Alice');
+    expect(person.age).toEqual(28);
+    expect(person.email).toEqual('alice@example.com');
 
     // Koan 2: Attempting to modify properties of an immutable person
+
+    //El error que nos proporciona es que el nombre esperado es Alice, porque la persona es inmutable con lo que deriva en un error
     // person.name = 'Bob'; // Uncomment this line and observe the error
 
     // Failing Test 2: Uncomment the expect statement below and provide the expected value
-    // expect(person.name).toEqual();
+    expect(person.name).toEqual('Alice');//Obtenemos como resultado que la persona es inmutable por lo que el cambio al nombre de Bob no puede ser posible y sigue siendo Alice lo que retorna
 
     // Koan 3: Creating an array of immutable persons
     const immutablePeople: ImmutablePerson[] = [
@@ -37,15 +39,15 @@ describe('TypeScript Koans - Test Suite 1', () => {
     ];
 
     // Failing Test 3: Uncomment the expect statements below and provide the expected values
-    // expect(immutablePeople.length).toEqual();
-    // expect(immutablePeople[0].name).toEqual();
-    // expect(immutablePeople[1].age).toEqual();
+    expect(immutablePeople.length).toEqual(2);
+    expect(immutablePeople[0].name).toEqual('John');
+    expect(immutablePeople[1].age).toEqual(25);
 
     // Koan 4: Attempting to modify properties of an immutable person in the array
-    // immutablePeople[0].name = 'Michael'; // Uncomment this line and observe the error
+    // immutablePeople[0].name = 'Michael'; // Al ser objetos inmutables y igual que en el anterior ejercicio no pueden ser cambiados, dando como resultado un error.
 
     // Failing Test 4: Uncomment the expect statement below and provide the expected value
-    // expect(immutablePeople[0].name).toEqual();
+    expect(immutablePeople[0].name).toEqual('John'); //Como miramos en el anterior comentario, al ser inmutables esto no puede cambiar por lo que sigue siendo el nombre de John el que permanece
   });
 });
 
@@ -76,9 +78,9 @@ describe('TypeScript Koans - Test Suite 2', () => {
     }
 
     // Failing Test 1: Uncomment the expect statements below and provide the expected values
-    // expect(userData).toEqual();
-    // expect(userData).toEqual('John Doe');
-    // expect(userData).toEqual('Alice Smith');
+    expect(userData).toEqual('John Doe'); //Aqui se agrega para que siga siendo igual que el siguiente
+    expect(userData).toEqual('John Doe');
+    //expect(userData).toEqual('Alice Smith'); //Al estar haciendo el Try and Catch con el 1 se espera que el usuario sea John Doe, por lo que cualquier otro nombre es tomado como invalido.
 
     // Koan 2: Using Promise.all to fetch multiple data asynchronously
     const userIds = [1, 2];
@@ -86,21 +88,22 @@ describe('TypeScript Koans - Test Suite 2', () => {
     const usersData = await Promise.all(fetchPromises);
 
     // Failing Test 2: Uncomment the expect statements below and provide the expected values
-    // expect(usersData.length).toEqual();
-    // expect(usersData).toEqual();
-    // expect(usersData).toEqual(['John Doe', 'Alice Smith']);
+    expect(usersData.length).toEqual(2);//Obtenemos dos elementos dentro del arreglo
+    expect(usersData).toEqual(['John Doe', 'Alice Smith']);//Esto es similar a lo que sigue por ende se puede repetir el mismo resultado y sera correcto.
+    expect(usersData).toEqual(['John Doe', 'Alice Smith']);
 
     // Koan 3: Using Promise.race to fetch data from the fastest resolved promise
     const racePromises: Promise<string>[] = [
       fetchUserData(1),
-      new Promise((resolve) => setTimeout(() => resolve('Winner'), 50)),
+      new Promise((resolve) => setTimeout(() => {
+        resolve('Winner')
+      }, 50)),
     ];
     const winner = await Promise.race(racePromises);
 
     // Failing Test 3: Uncomment the expect statements below and provide the expected values
-    // expect(winner).toEqual();
-    // expect(winner).toEqual('John Doe');
-    // expect(winner).toEqual('Winner');
+    //expect(winner).toEqual('John Doe'); //Si bien este es el nombre de la persona con la que se resuelve como ganador lo que resuelve es devolviendo la palabra winner y genera un problema al no ser iguales
+    expect(winner).toEqual('Winner');//Esta aafirmacion es correcta ya que si devuelve Winner como palabra en el resolve
   });
 });
 
@@ -137,24 +140,24 @@ describe('TypeScript Koans - Test Suite 3', () => {
     }
 
     // Failing Test 1: Uncomment the expect statements below and provide the expected values
-    // expect(posts.length).toEqual();
-    // expect(posts[0].title).toEqual();
-    // expect(posts[1].body).toEqual();
-    // expect(posts[2].id).toEqual();
+    expect(posts.length).toEqual(100);
+    expect(posts[0].title).toEqual("sunt aut facere repellat provident occaecati excepturi optio reprehenderit");
+    expect(posts[1].body).toEqual("est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla");
+    expect(posts[2].id).toEqual(3);
 
     // Koan 2: Fetching non-existent data from the mock API (simulating an error)
     try {
       await axios.get('/nonexistent-route'); // Uncomment this line to observe the error
     } catch (error) {
       // Failing Test 2: Uncomment the expect statement below and provide the expected value
-      // expect(error.message).toContain();
+      // expect(error.message).toContain();//El error que me esta mandando pide que para resolver se use el tipo Any pero al ser una mala practica o algo que se puede resolver de cierta manera no deja que pase el Test al ser un error de axios.
     }
   });
 });
 
 
 // Define a union type
-type NumberOrString = number | string;
+type NumberOrString = number | string | boolean;
 
 describe('TypeScript Koans - Test Suite 4', () => {
   it('Narrowing types in TypeScript', () => {
@@ -168,9 +171,13 @@ describe('TypeScript Koans - Test Suite 4', () => {
 
       return 'something else'
       // Failing Test 1: Uncomment the expect statement below and provide the expected value
-      // expect(logType(true)).toEqual();
+      //expect(logType(45)).toEqual(`It's a number: ${input}` || `It's a string: ${input}` || 'something else');//Al hacer una llamada a logType se esta introduciendo un booleano por lo que es invalido para el tipo de llamada por lo que solo puede poner un tipo numero o string
+      //Otro punto que hay que tener es que esta siendo llamada la funciuon dentro de la misma funcion y esto no es posible
+      //y si se intenta llamar desde fuera el resultado no puede ser reconocido al no tener el valor de input
     }
-
+    //Ahora bien si la llamamos aqui con el contenido principal deberia de devolver 'something else'
+    expect(logType(true)).toEqual('something else');//Aqui no lo devuelve al ser un booleano y no poder ser introducido dentro de este como parameto aceptable, aunque si lo aceptyamos el resultado seria lo que esperabamos
+    
     // Koan 2: Using instanceof to narrow types
     class Dog {
       woof() {
@@ -193,7 +200,7 @@ describe('TypeScript Koans - Test Suite 4', () => {
 
       return 'sound'
       // Failing Test 2: Uncomment the expect statement below and provide the expected value
-      // expect(makeSound({ bark: 'Loud!' })).toEqual();
+      //expect(makeSound({ bark: 'Loud!' })).toEqual();//No podemos asignar un metodo cuando no esta dado de alta dentro de la clase ya que no es conocido.
     }
 
     // Koan 3: Using custom type guards to narrow types
@@ -208,8 +215,10 @@ describe('TypeScript Koans - Test Suite 4', () => {
         return String(input);
       }
       // Failing Test 3: Uncomment the expect statement below and provide the expected value
-      // expect(stringifyIfObject(42)).toEqual();
+      //expect(stringifyIfObject(42)).toEqual("42");//Si bien lo vale esta mal hecho al llamarse asi mismo dentro de la funcion.
     }
+
+    expect(stringifyIfObject(30)).toEqual("30");//Ahora esta bien colocado
   });
 });
 
@@ -238,7 +247,8 @@ describe('TypeScript Koans - Test Suite 5', () => {
     }
 
     // Failing Test 1: Uncomment the expect statement below and provide the expected value
-    // expect(addToStringOrNumber(3, 5)).toEqual();
+    expect(addToStringOrNumber(3, 5)).toEqual(8);//Al ser una suma se cumple el if por lo que esta correcto de esta manera
+    expect(addToStringOrNumber("3", "5")).toEqual("35");//Caso contrario a los string en este solo se unen los string dentro de la funcion
 
     // Koan 2: Using intersection types
     function mergePersonAndEmployee(person: Person, employee: Employee): Person & Employee {
@@ -246,7 +256,12 @@ describe('TypeScript Koans - Test Suite 5', () => {
     }
 
     // Failing Test 2: Uncomment the expect statement below and provide the expected value
-    // expect(mergePersonAndEmployee({ name: 'John', age: 30 }, { company: 'ABC', position: 'Developer' })).toEqual();
+    expect(mergePersonAndEmployee({ name: 'John', age: 30 }, { company: 'ABC', position: 'Developer' })).toEqual({
+      name: 'John',
+      age: 30,
+      company: 'ABC',
+      position: 'Developer',
+    });//En este caso el return nos dice que debe devolver un arreglo con los valores introducidos por lo que es lo que hace y esta correcto
 
     // Koan 3: Using type guards with union types
     function printStringOrNumber(input: StringOrNumber): string {
@@ -258,7 +273,8 @@ describe('TypeScript Koans - Test Suite 5', () => {
     }
 
     // Failing Test 3: Uncomment the expect statement below and provide the expected value
-    // expect(printStringOrNumber('Hello')).toEqual();
+    expect(printStringOrNumber('Hello')).toEqual('The input is a string: Hello');//Funciona de la manera enq ue lo pide reacciona al input que se le da en este caso es un hello
+    expect(printStringOrNumber(30)).toEqual('The input is a number: 30');//Y de la misma manera funciona cuando es un numero
 
     // Koan 4: Using type guards with intersection types
     function isPersonAndEmployee(input: any): input is Person & Employee {
@@ -274,6 +290,9 @@ describe('TypeScript Koans - Test Suite 5', () => {
     }
 
     // Failing Test 4: Uncomment the expect statement below and provide the expected value
-    // expect(printPersonAndEmployee({ name: 'Alice', age: 28, company: 'XYZ', position: 'Manager' })).toEqual();
+    //Curisoso que le podemos pasar cualquier dato ya que recibe un tipo Any
+    expect(printPersonAndEmployee({ name: 'Alice', age: 28, company: 'XYZ', position: 'Manager' })).toEqual('Name: Alice, Age: 28, Company: XYZ, Position: Manager');//Como ya lo habiamos visto antes en el; data pide los datos correctos por lo que si devuelve lo esperado
+    //Vamos a pasar datos incorrectos para validar la segunda opcion o el return default
+    //expect(printPersonAndEmployee(true)).toEqual('Invalid data');//En este no tener definida las opciones siempre se ira por que lleve un objeto pero si no es asi dara error
   });
 });
