@@ -115,6 +115,7 @@ describe("TypeScript Koans - Test Suite 2", () => {
 });
 
 import axios, { AxiosError, AxiosResponse } from "axios";
+import MockAdapter from "axios-mock-adapter";
 
 // Define a TypeScript interface for the Post object
 interface Post {
@@ -127,7 +128,7 @@ interface Post {
 async function fetchPosts(): Promise<Post[]> {
   try {
     const response: AxiosResponse<Post[]> = await axios.get(
-      "https://jsonplaceholder.typicode.com/posts?_limit=10"
+      "https://jsonplaceholder.typicode.com/posts"
     );
     return response.data;
   } catch (error) {
@@ -140,8 +141,29 @@ describe("TypeScript Koans - Test Suite 3", () => {
   it("Fetching data with Axios in TypeScript", async () => {
     // Koan 1: Fetching posts from the mock API
     let posts: Post[];
+    const axiosMock = new MockAdapter(axios, { onNoMatch: "throwException" });
+    const mockResponse: Post[] = [
+      {
+        id: 1,
+        title: "MockTitle_1",
+        body: "MockBody_1",
+      },
+      {
+        id: 2,
+        title: "MockTitle_2",
+        body: "MockBody_2",
+      },
+      {
+        id: 3,
+        title: "MockTitle_3",
+        body: "MockBody_3",
+      },
+    ];
 
     try {
+      axiosMock
+        .onGet("https://jsonplaceholder.typicode.com/posts")
+        .reply(200, mockResponse);
       posts = await fetchPosts();
     } catch (error) {
       // If an error occurs, set posts to an empty array
@@ -149,25 +171,20 @@ describe("TypeScript Koans - Test Suite 3", () => {
     }
 
     // Failing Test 1: Uncomment the expect statements below and provide the expected values
-    // NOTE: since this test is really consuming the endpoint, it returns this, the good way is to mock the response so the we dont depend of the api for the test
-    expect(posts.length).toEqual(10);
-    expect(posts[0].title).toEqual(
-      "sunt aut facere repellat provident occaecati excepturi optio reprehenderit"
-    );
-    expect(posts[1].body).toEqual(
-      "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
-    );
+    expect(posts.length).toEqual(3);
+    expect(posts[0].title).toEqual("MockTitle_1");
+    expect(posts[1].body).toEqual("MockBody_2");
     expect(posts[2].id).toEqual(3);
 
     // Koan 2: Fetching non-existent data from the mock API (simulating an error)
 
     try {
+      axiosMock.onGet("/nonexistent-route").networkError();
       await axios.get("/nonexistent-route"); // Uncomment this line to observe the error
     } catch (error) {
       if (error instanceof AxiosError)
         // Failing Test 2: Uncomment the expect statement below and provide the expected value
-        // NOTE: since this test is really consuming the endpoint, it fails wen the route dont exists
-        expect(error.message).toContain("connect ECONNREFUSED");
+        expect(error.message).toContain("Network Error");
     }
   });
 });
